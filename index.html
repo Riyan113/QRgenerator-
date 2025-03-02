@@ -24,46 +24,66 @@
     </div>
   </div>
 
-  <script>
-    function generateQR() {
-      let text = document.getElementById("textInput").value.trim();
-      let qrContainer = document.getElementById("qrcodeContainer");
-      let downloadBtn = document.getElementById("downloadBtn");
-
-      qrContainer.innerHTML = ""; 
-
-      if (!text) {
-        alert("Masukkan teks atau URL!");
-        return;
-      }
-
-      new QRCode(qrContainer, {
-        text: text,
-        width: 200,
-        height: 200
-      });
-
-      setTimeout(() => {
-        let qrCanvas = qrContainer.querySelector("canvas");
-        if (qrCanvas) {
-          downloadBtn.href = qrCanvas.toDataURL("image/png");
-          downloadBtn.download = "qrcode_" + Date.now() + ".png";
-          downloadBtn.classList.remove("hidden");
-        }
-      }, 500);
-
-      openModal();
-    }
-
-    function openModal() {
-      document.getElementById("qrModal").classList.remove("hidden");
-    }
-
-    function closeModal() {
-      document.getElementById("qrModal").classList.add("hidden");
-      document.getElementById("textInput").value = ""; 
-    }
   </script>
+<script>
+  function generateQR() {
+    let text = document.getElementById("textInput").value.trim();
+    let qrContainer = document.getElementById("qrcodeContainer");
+    let downloadBtn = document.getElementById("downloadBtn");
 
+    qrContainer.innerHTML = ""; 
+
+    if (!text) {
+      alert("Masukkan teks atau URL!");
+      return;
+    }
+
+    new QRCode(qrContainer, {
+      text: text,
+      width: 200,
+      height: 200
+    });
+
+    setTimeout(() => {
+      let qrCanvas = qrContainer.querySelector("canvas");
+      if (qrCanvas) {
+        let finalCanvas = addBorderToQR(qrCanvas);
+        downloadBtn.href = finalCanvas.toDataURL("image/png");
+        downloadBtn.download = "qrcode_" + Date.now() + ".png";
+        downloadBtn.classList.remove("hidden");
+      }
+    }, 500);
+
+    openModal();
+  }
+
+  function addBorderToQR(qrCanvas) {
+    let borderSize = 20; 
+    let canvas = document.createElement("canvas");
+    let ctx = canvas.getContext("2d");
+
+    
+    canvas.width = qrCanvas.width + borderSize * 2;
+    canvas.height = qrCanvas.height + borderSize * 2;
+
+    
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  
+    ctx.drawImage(qrCanvas, borderSize, borderSize);
+
+    return canvas;
+  }
+
+  function openModal() {
+    document.getElementById("qrModal").classList.remove("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("qrModal").classList.add("hidden");
+    document.getElementById("textInput").value = ""; 
+  }
+</script>
 </body>
 </html>
