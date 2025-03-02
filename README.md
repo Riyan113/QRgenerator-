@@ -1,1 +1,1 @@
-# QRgenerator-
+# QR Code Sederhana
